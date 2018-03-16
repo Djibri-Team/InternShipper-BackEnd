@@ -14,6 +14,15 @@ const sequelize = new Sequelize('c51debeliyaiko', 'c51debeliyaiko', 'Zy9pAhzFXnE
   }
 });
 
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+});
+
 
 app.get('/', function (req, res) {
 	res.send('Hello');
