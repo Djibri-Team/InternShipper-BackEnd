@@ -129,4 +129,9 @@ app.get('/publisher/applications/:id', function (req, res) {
  });
 });
 
+app.post('/offer/add', function(req, res) {
+  con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) values(' + req.query.pubId  + ', ' +
+  req.query.intTime + ', ' + req.query.hours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.type + ')');
+});
+
 app.listen(3000);
