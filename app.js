@@ -34,6 +34,7 @@ app.get('/login', function (req, res) {
 		}
 	};
 });
+});
 
 app.get('/offers', function (req, res) {
    con.query('SELECT * from Offer', function(err, rows, fields) {
@@ -129,9 +130,15 @@ app.get('/publisher/applications/:id', function (req, res) {
  });
 });
 
-app.post('/offer/add', function(req, res) {
-  con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) values(' + req.query.pubId  + ', ' +
-  req.query.intTime + ', ' + req.query.hours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.type + ')');
+app.post('/offers/add', function(req, res) {
+  con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) values(' + req.query.publisherId  + ', ' +
+  req.query.internTimeLength + ', ' + req.query.workingHours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.offerType + ')', function(err, rows, field) {
+      if(!err) {
+        res.json(err);
+      }
+    });
 });
+
+// app.post('/offers/edit', function())
 
 app.listen(3000);
