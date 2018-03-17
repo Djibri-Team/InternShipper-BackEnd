@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var Cryptr = require('cryptr'),
+    cryptr = new Cryptr('myTotalySecretKey');
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
@@ -23,9 +25,14 @@ app.get('/login', function (req, res) {
 
 	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";' , function (err, result, fields) {
 		if (result.passwordHash === req.query.password) {
+		console.log(result);
+		var password = cryptr.decrypt(result.passwordHash);
+		if (password === req.query.password) {
 			res.json(result);
+		} else {
+			res.json({Error : 'Password is incorrect'});
 		}
-	});
+	};
 });
 
 app.get('/offers', function (req, res) {
