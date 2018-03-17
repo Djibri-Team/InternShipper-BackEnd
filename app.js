@@ -96,12 +96,38 @@ app.get('/publisher/offers', function (req, res) {
  });
 });
 
+app.get('/publisher/userOnOffer/:id', function (req, res) {
+   con.query('SELECT a.applicationStatus, p.email, p.firstName, p.lastName, p.telephoneNumber, p.userType ' 
+    + ' FROM Application as a LEFT JOIN Offer AS o ON a.offerId = o.id INNER JOIN Person AS p ON a.userId = p.id ' 
+     + 'WHERE a.offerId' + res.param.id + ';', function(err, rows, fields) {
+   if (!err) {
+     res.json(rows);
+   }
+   else {
+     console.log('Error while performing Query.');
+     res.end('error');
+   }
+ });
+});
+
 app.get('/user/applications', function (req, res) {
    con.query('SELECT * FROM Application INNER JOIN Offer ON Offer.id = Application.offerId WHERE userId = ' + req.query.userId + ';', function(err, rows, fields) {
    if (!err) {
      res.json(rows);
    }
    else {
+     console.log('Error while performing Query.');
+     res.end('error');
+   }
+ });
+});
+
+app.get('/user/applications/:id', function (req, res) {
+  con.query('SELECT * FROM Application as a INNER JOIN Offer AS o ON a.offerId = o.id INNER JOIN Person AS p ON p.Id = o.publisherId OR a.userId = p.id ' +
+ 'WHERE a.id = ' + req.params.id + ';', function(err, rows, fields) {
+   if (!err) {
+     res.json(rows);
+   } else {
      console.log('Error while performing Query.');
      res.end('error');
    }
@@ -120,7 +146,6 @@ app.get('/publisher/applications', function (req, res) {
 });
 
 app.get('/publisher/applications/:id', function (req, res) {
-  console.log(req.params.id);
   con.query('SELECT * FROM Application as a INNER JOIN Offer AS o ON a.offerId = o.id INNER JOIN Person AS p ON p.Id = o.publisherId OR a.userId = p.id ' +
  'WHERE a.id = ' + req.params.id + ';', function(err, rows, fields) {
    if (!err) {
