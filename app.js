@@ -6,8 +6,8 @@ var mysql = require('mysql');
 
 var con = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "root",
+  user: "kristiqn",
+  password: "hacktues",
   database : "InternShipper"
 });
 
@@ -22,18 +22,44 @@ app.get('/login', function (req, res) {
 	} else if (!req.query.email) {
 		res.json({Error : 'Please enter a valid password'});
 	}
+	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";', function (err, result, fields) {
+	   if (!err) {
+		  var password = cryptr.decrypt(result[0].passwordHash);
+		  if (password === req.query.password) {
+		  	res.json(result);
+		  } else {
+			  res.json({Error : 'Password is incorrect'});
+		  }
+	   } else {
+		res.json(err);
+	   }
+	});
+});
 
-	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";' , function (err, result, fields) {
-		if (result.passwordHash === req.query.password) {
-		console.log(result);
-		var password = cryptr.decrypt(result.passwordHash);
-		if (password === req.query.password) {
-			res.json(result);
-		} else {
-			res.json({Error : 'Password is incorrect'});
-		}
-	   };
-  });
+app.post('/register', function (req, res) {
+	if (!req.query.firstName) {
+		res.json({Error : 'Please enter a valid first name'});	
+	} else if (!req.query.lastName) {
+		res.json({Error : 'Please enter a valid last name'});	
+	} else if (!req.query.email) {
+		res.json({Error : 'Please enter a valid email'});
+	} else if (!req.query.password) {
+		res.json({Error : 'Please enter a valid password'});
+	}
+	
+	var passwordHash = cryptr.encrypt(req.query.password);
+
+	con.query('INSERT INTO Person(email, passwordHash, firstName, lastName, telephoneNumber, userType, description) VALUES('+ req.query.email + ',' + passwordHash + ',' + req.query.firstName + ',' + 		req.query.lastName + ',' + req.query.telephoneNumber + ',' + req.query.userRole + ',' + req.query.description + ')', function (err, result, fields) {
+		if (err) {
+			res.json(err);		
+		}	
+	});
+
+	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";', function (err, result, fields) {
+		if (!err) {
+			res.json(result[0]);		
+		}	
+	});
 });
 
 app.get('/offers', function (req, res) {
