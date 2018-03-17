@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var bodyParser
 var Cryptr = require('cryptr'),
     cryptr = new Cryptr('myTotalySecretKey');
 var mysql = require('mysql');
@@ -21,13 +22,15 @@ con.connect(function(err) {
 });
 
 app.get('/login', function (req, res) {
+	console.log(req.query.email);
 	if (!req.query.email) {
 		res.json({Error : 'Please enter a valid email'});
 	} else if (!req.query.email) {
 		res.json({Error : 'Please enter a valid password'});
 	}
-	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";', function (err, result, fields) {
+	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '"', function (err, result, fields) {
 	   if (!err) {
+		  console.log(result);
 		  var password = cryptr.decrypt(result[0].passwordHash);
 		  if (password === req.query.password) {
 		  	res.json(result);
@@ -41,6 +44,7 @@ app.get('/login', function (req, res) {
 });
 
 app.post('/register', function (req, res) {
+	console.log(req);
 	if (!req.query.firstName) {
 		res.json({Error : 'Please enter a valid first name'});	
 	} else if (!req.query.lastName) {
@@ -53,7 +57,7 @@ app.post('/register', function (req, res) {
 	
 	var passwordHash = cryptr.encrypt(req.query.password);
 
-	con.query('INSERT INTO Person(email, passwordHash, firstName, lastName, telephoneNumber, userType, description) VALUES('+ req.query.email + ',' + passwordHash + ',' + req.query.firstName + ',' + 		req.query.lastName + ',' + req.query.telephoneNumber + ',' + req.query.userRole + ',' + req.query.description + ')', function (err, result, fields) {
+	con.query('INSERT INTO Person(email, passwordHash, firstName, lastName, telephoneNumber, userType, description) VALUES("'+ req.query.email + '" , "' + passwordHash + '" , "' + req.query.firstName + '" , "' + req.query.lastName + '" , " ' + req.query.telephoneNumber + '" , "' + req.query.userRole + '" , "' + req.query.description + '")', function (err, result, fields) {
 		if (err) {
 			res.json(err);		
 		}	
