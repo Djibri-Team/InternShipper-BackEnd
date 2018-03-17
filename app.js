@@ -132,13 +132,13 @@ app.get('/publisher/applications/:id', function (req, res) {
 
 app.post('/offers/add', function(req, res) {
   con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) values(' + req.query.publisherId  + ', ' +
-  req.query.internTimeLength + ', ' + req.query.workingHours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.offerType + ')', function(err, rows, field) {
-      if(!err) {
-        res.json(err);
+  req.query.internTimeLength + ', ' + req.query.workingHours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.offerType + ')', function(err, result) {
+      if(err) {
+        throw err;
       }
     });
 });
 
-// app.post('/offers/edit', function())
+app.post('/offers/edit,', function(req, res))
 
 app.listen(3000);
