@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var Cryptr = require('cryptr'),
+    cryptr = new Cryptr('myTotalySecretKey');
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
