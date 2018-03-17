@@ -32,7 +32,8 @@ app.get('/login', function (req, res) {
 		} else {
 			res.json({Error : 'Password is incorrect'});
 		}
-	};
+	   };
+  });
 });
 
 app.get('/offers', function (req, res) {
@@ -119,7 +120,9 @@ app.get('/publisher/applications', function (req, res) {
 });
 
 app.get('/publisher/applications/:id', function (req, res) {
-  con.query('SELECT * FROM Application WHERE id = ' + req.query.id + ';', function(err, rows, fields) {
+  console.log(req.params.id);
+  con.query('SELECT * FROM Application as a INNER JOIN Offer AS o ON a.offerId = o.id INNER JOIN Person AS p ON p.Id = o.publisherId OR a.userId = p.id ' +
+ 'WHERE a.id = ' + req.params.id + ';', function(err, rows, fields) {
    if (!err) {
      res.json(rows);
    } else {
