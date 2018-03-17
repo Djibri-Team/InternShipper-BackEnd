@@ -3,11 +3,15 @@ var app = express();
 var Cryptr = require('cryptr'),
     cryptr = new Cryptr('myTotalySecretKey');
 var mysql = require('mysql');
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 
 var con = mysql.createConnection({
   host: "localhost",
-  user: "kristiqn",
-  password: "hacktues",
+  user: "root",
+  password: "root",
   database : "InternShipper"
 });
 
@@ -183,14 +187,24 @@ app.get('/publisher/applications/:id', function (req, res) {
  });
 });
 
-app.post('/offer/add', function(req, res) {
-
-  con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) values(' + req.query.pubId  + ', ' +
-  req.query.intTime + ', ' + req.query.hours + ', ' + req.query.title + ', ' + req.query.description + ', ' + req.query.type + ')', function(err, result, fields) {
+app.post('/offers/add', function(req, res) {
+  con.query('INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) VALUES(' + req.body.publisherId  + ', ' +
+  req.body.internTimeLength + ', ' + req.body.workingHours + ', ' + req.body.title + ', ' + req.body.description + ', ' + req.body.offerType + ');', function(err, result, fields) {
     if(err) {
       throw err;
     } 
-      
+    res.json('OK');
+  });
+});
+
+app.post('/publisher/offer/status', function(req, res) {
+  console.log(req.body);
+  con.query('UPDATE Application SET applicationStatus = ' + "'" + req.body.applicationStatus + "'" + ' WHERE userId= ' 
+    + req.body.userId + ' AND offerId='  + req.body.offerId + ';', function(err, result, fields) {
+    if(err) {
+      throw err;
+    }
+  res.json('OK');       
   });
 });
 
