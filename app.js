@@ -45,25 +45,25 @@ app.get('/login', function (req, res) {
 
 app.post('/register', function (req, res) {
 	console.log(req);
-	if (!req.query.firstName) {
+	if (!req.body.firstName) {
 		res.json({Error : 'Please enter a valid first name'});	
-	} else if (!req.query.lastName) {
+	} else if (!req.body.lastName) {
 		res.json({Error : 'Please enter a valid last name'});	
-	} else if (!req.query.email) {
+	} else if (!req.body.email) {
 		res.json({Error : 'Please enter a valid email'});
-	} else if (!req.query.password) {
+	} else if (!req.body.password) {
 		res.json({Error : 'Please enter a valid password'});
 	}
 	
 	var passwordHash = cryptr.encrypt(req.query.password);
 
-	con.query('INSERT INTO Person(email, passwordHash, firstName, lastName, telephoneNumber, userType, description) VALUES("'+ req.query.email + '" , "' + passwordHash + '" , "' + req.query.firstName + '" , "' + req.query.lastName + '" , " ' + req.query.telephoneNumber + '" , "' + req.query.userRole + '" , "' + req.query.description + '")', function (err, result, fields) {
+	con.query('INSERT INTO Person(email, passwordHash, firstName, lastName, telephoneNumber, userType, description) VALUES("'+ req.body.email + '" , "' + passwordHash + '" , "' + req.body.firstName + '" , "' + req.body.lastName + '" , " ' + req.body.telephoneNumber + '" , "' + req.body.userRole + '" , "' + req.body.description + '")', function (err, result, fields) {
 		if (err) {
 			res.json(err);		
 		}	
 	});
 
-	con.query('SELECT * FROM Person WHERE email = "' + req.query.email + '";', function (err, result, fields) {
+	con.query('SELECT * FROM Person WHERE email = "' + req.body.email + '";', function (err, result, fields) {
 		if (!err) {
 			res.json(result[0]);		
 		}	
