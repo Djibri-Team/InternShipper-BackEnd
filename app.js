@@ -30,15 +30,13 @@ app.post('/login', function (req, res) {
 	con.query("SELECT * FROM UserAccount WHERE email = '" + req.body.email + "'", function (err, result, fields) {
 	   if (!err) {
 		  var passwordHash = cryptr.encrypt(req.body.password);
-      console.log(passwordHash);
+      if (result.length === 0) {
+        res.json(err);
+      }
 		  if (result[0].userPassword === passwordHash) {
 		  	res.json(result);
-		  } else {
-			  res.json({Error : 'Password is incorrect'});
 		  }
-	   } else {
-		  res.json(err);
-	   }
+    } 
 	});
 });
 
@@ -200,9 +198,9 @@ app.get('/publisher/applications/:id', function (req, res) {
 
 app.post('/offers/add', function(req, res) {
   console.log(req.body);
-  con.query("INSERT INTO Offer(publisherId, internTimeLength, workingHours, title, description, offerType) VALUES(" 
+  con.query("INSERT INTO Offer(publisherId, internTimeLength, companyName, workingHours, title, description, offerType) VALUES(" 
   + req.body.publisherId  + ", '" +
-  req.body.internTimeLength + "', " + req.body.workingHours + ", '" + req.body.title + "', '" + req.body.description + "', '" + req.body.offerType + "');", function(err, result, fields) {
+  req.body.internTimeLength + "', '" + req.body.companyName + "', " + req.body.workingHours + ", '" + req.body.title + "', '" + req.body.description + "', '" + req.body.offerType + "');", function(err, result, fields) {
     if(err) {
       throw err;
     } 
