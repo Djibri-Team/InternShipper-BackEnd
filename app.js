@@ -212,17 +212,14 @@ app.post('/offers/add', function(req, res) {
 
 app.post('/publisher/offer/status', function(req, res) {
   console.log(req.body);
-  con.query('UPDATE Application SET applicationStatus = ' + "'" + req.body.applicationStatus + "'" + ' WHERE userId= ' 
-    + req.body.userId + ' AND offerId='  + req.body.offerId + ';', function(err, result, fields) {
+  con.query("UPDATE Application SET applicationStatus = '"
+    + req.body.applicationStatus + "' WHERE userId= "
+    + req.body.userId + " AND offerId= "  + req.body.offerId + ";", function(err, result, fields) {
     if(err) {
       throw err;
     }
   res.json('OK');       
   });
-});
-
-app.post('', function(req, res) {
-  con.query('UPDATE ')
 });
 
 app.listen(3000);
