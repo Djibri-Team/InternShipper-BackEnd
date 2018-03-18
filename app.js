@@ -43,6 +43,7 @@ app.post('/login', function (req, res) {
 });
 
 app.post('/register', function (req, res) {
+  console.log(req.body);
 	if (!req.body.firstName) {
 		res.json({Error : 'Please enter a valid first name'});	
 	} else if (!req.body.lastName) {
@@ -52,10 +53,10 @@ app.post('/register', function (req, res) {
 	} else if (!req.body.password) {
 		res.json({Error : 'Please enter a valid password'});
 	}
-	
+
 	var passwordHash = cryptr.encrypt(req.body.password);
 
-  con.query("INSERT INTO UserAccount(email, userPassword, firstName, lastName,  userRole, description) VALUES('"
+  con.query("INSERT INTO UserAccount(email, userPassword, firstName, lastName, userRole, description) VALUES('"
     + req.body.email + "' , '"
     + passwordHash + "' , '" 
     + req.body.firstName + "' , '" 
@@ -64,13 +65,12 @@ app.post('/register', function (req, res) {
     + req.body.description + "')", function (err, result, fields) {
 		if (err) {
 			res.json(err);		
-		}	
-    res.send('registered');
+		} 
 	});
 
 	con.query("SELECT * FROM UserAccount WHERE email = '" + req.body.email + "';", function (err, result, fields) {
 		if (!err) {
-			res.json(result[0]);		
+			res.json(result);		
 		}	
 	});
 });
