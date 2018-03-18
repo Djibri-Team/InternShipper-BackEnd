@@ -122,7 +122,21 @@ app.get('/offers/embedded', function (req, res) {
 });
 
 app.get('/publisher/offers', function (req, res) {
-   con.query("SELECT * FROM Offer WHERE publisherId = " + req.query.publisherId + ";", function(err, rows, fields) {
+  console.log(req.query);
+   con.query("SELECT * FROM Offer WHERE publisherId = " + req.query.userId + ";", function(err, rows, fields) {
+   if (!err) {
+     res.json(rows);
+   }
+   else {
+     console.log('Error while performing Query.');
+     res.end('error');
+   }
+ });
+});
+
+app.get('/publisher/offers', function (req, res) {
+  console.log(req.query.offerId);
+   con.query("SELECT * FROM Offer WHERE Offer.id = " + req.query.offerId + ";", function(err, rows, fields) {
    if (!err) {
      res.json(rows);
    }
@@ -173,7 +187,8 @@ app.get('/user/applications/:id', function (req, res) {
 });
 
 app.get('/publisher/applications', function (req, res) {
-   con.query("SELECT * FROM Application INNER JOIN Offer ON Offer.id = Application.offerId WHERE publisherId = " + req.query.publisherId + "'", function(err, rows, fields) {
+  console.log(req.query);
+   con.query("SELECT * FROM Application INNER JOIN Offer ON Offer.id = Application.offerId WHERE publisherId = " + req.query.userId + ";", function(err, rows, fields) {
    if (!err) {
      res.json(rows);
    } else {
